@@ -1,0 +1,26 @@
+[
+    {
+        "texto": "playa",
+        "categoria": "lugares"
+    },
+    {
+        "texto": "montaña",
+        "categoria": "lugares"
+    },
+    {
+        "texto": "gato",
+        "categoria": "animales"
+    },
+    {
+        "texto": "elefante",
+        "categoria": "animales"
+    },
+    {
+        "texto": "reloj",
+        "categoria": "objetos"
+    },
+    {
+        "texto": "computador",
+        "categoria": "objetos"
+    }
+]
