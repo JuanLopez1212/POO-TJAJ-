@@ -8,10 +8,13 @@ from servicios.interfaces import IRepositorioPalabras
 
 class RepositorioPalabrasArchivo(IRepositorioPalabras):
 
-    def _init_(self,ruta: str | Path,rng: random.Random | None = None):
-
-        self._ruta = Path(ruta)
-        self._rng = rng or random.Random()
+    def __init__ ( 
+            self,
+            ruta: str | Path,
+            rng: random.Random | None = None
+            ):
+                self._ruta = Path(ruta)
+                self._rng = rng or random.Random()
 
     def obtener_palabra_aleatoria(self,categoria: str | None = None) -> PalabraSecreta:
 

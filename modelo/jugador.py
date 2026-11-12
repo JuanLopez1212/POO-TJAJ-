@@ -6,7 +6,7 @@ from modelo.excepciones import EstadoInvalidoException
 
 class Jugador:
 
-    def _init_(self, identificador: int, nombre: str):
+    def __init__(self, identificador: int, nombre: str):
         if identificador < 1 or not nombre.strip():
             raise ValueError(
                 "Identificador y nombre válidos son obligatorios"

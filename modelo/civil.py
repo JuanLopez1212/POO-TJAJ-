@@ -4,7 +4,7 @@ from modelo.palabra_secreta import PalabraSecreta
 
 class Civil(Rol):
 
-    def _init_(self, palabra: PalabraSecreta):
+    def __init__(self, palabra: PalabraSecreta):
         self.__palabra = palabra
 
     @property
