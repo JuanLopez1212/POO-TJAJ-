@@ -214,6 +214,7 @@ class Partida:
             self.activos
         )
 
+    
     def resolver_votacion(self) -> list[Jugador]:
 
         if self.ronda_actual.fase != FaseJuego.VOTACION:
@@ -227,13 +228,37 @@ class Partida:
         )
 
         if len(candidatos) > 1:
-            # El empate queda pendiente de desempate.
+
+            if self.ronda_actual.intentos_desempate == 0:
+                self.ronda_actual.preparar_desempate(
+                    candidatos
+                )
+
+            else:
+                
+                self.ronda_actual.avanzar_fase()
+
+                if (
+                    len(self.__rondas)
+                    >= self.__configuracion.max_rondas
+                ):
+                    self.__resultado = ResultadoPartida(
+                        Ganador.IMPOSTOR,
+                        False
+                    )
+                else:
+                    self.__rondas.append(
+                        Ronda(len(self.__rondas) + 1)
+                    )
+
             return candidatos
 
+        
         acusado = candidatos[0]
 
         self.ronda_actual.avanzar_fase()
 
+        
         if acusado is self.__impostor:
 
             if not self.__configuracion.ultima_oportunidad:
@@ -247,7 +272,8 @@ class Partida:
         acusado.eliminar()
 
         if (
-            len(self.__rondas) >= self.__configuracion.max_rondas
+            len(self.__rondas)
+            >= self.__configuracion.max_rondas
             or len(self.activos) <= 2
         ):
             self.__resultado = ResultadoPartida(
@@ -299,5 +325,16 @@ class Partida:
             True,
             acierto
         )
+
+        def informacion_final(self) -> tuple[str, str]:
+            if not self.finalizada:
+                raise EstadoInvalidoException(
+                    "La partida no ha terminado"
+                )
+
+            return(
+                self.__palabra.texto,
+                self.__impostor.nombre
+            )
 
         return self.__resultado

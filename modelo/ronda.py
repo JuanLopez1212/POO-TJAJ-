@@ -16,6 +16,8 @@ class Ronda:
         self.__fase = FaseJuego.PISTAS
         self.__pistas: list[Pista] = []
         self.__votos: list[Voto] = []
+        self.__candidatos_desempate = None
+        self.__intentos_desempate = 0
 
     @property
     def numero(self):
@@ -73,7 +75,7 @@ class Ronda:
                 "El jugador ya dio su pista"
             )
         if pista.numero_turno != len(self.__pistas) + 1:
-         raise EstadoInvalidoException(
+            raise EstadoInvalidoException(
             "Turno incorrecto"
         )
         self.__pistas.append(pista)
@@ -83,6 +85,13 @@ class Ronda:
             voto: Voto,
             jugadores_activos
     ) -> None:
+        if(
+            self.__candidatos_desempate is not None
+            and voto.acusado not in self.__candidatos_desempate
+        ):
+            raise VotoInvalidoException(
+                "Debe votar por un candidato empatado"
+            )
         if self.__fase != FaseJuego.VOTACION:
             raise EstadoInvalidoException(
                 "No estamos en votación"
@@ -118,3 +127,24 @@ class Ronda:
             )
 
         self.__votos.append(voto)
+
+    @property
+    def candidatos_desempate(self):
+        return self.__candidatos_desempate
+
+    @property
+    def intentos_desempate(self):
+        return self.__intentos_desempate
+
+    def preparar_desempate(self, candidatos):
+        if(
+            self.__fase != FaseJuego.VOTACION
+            or len(candidatos) < 2
+        ):
+            raise EstadoInvalidoException(
+                "Desempate no disponible"
+            )
+
+        self.__candidatos_desempate = tuple(candidatos)
+        self.__votos.clear()
+        self.__intentos_desempate += 1
