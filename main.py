@@ -3,28 +3,35 @@ from pathlib import Path
 from controlador.controlador_partida import ControladorPartida
 from vista.vista_consola import VistaConsola
 
+from modelo.enumeraciones import Ganador
+
 from servicios.asignador_roles import AsignadorRolesAleatorio
 from servicios.validador_pistas import ValidadorPistaCompuesto
 from servicios.contador_votos import ContadorVotosMayoria
 from servicios.repositorio_palabras import RepositorioPalabrasArchivo
 
+
 def main():
+
     ruta = (
         Path(__file__).resolve().parent
-        /"datos"
-        /"palabras.json"
+        / "datos"
+        / "palabras.json"
     )
 
     vista = VistaConsola()
-    vista.titulo("Bienvenidos a el impostor")
 
+    vista.titulo("BIENVENIDOS A EL IMPOSTOR")
+
+    # Marcador acumulado
     marcador = {
-        "Civiles": 0,
-        "Impostor": 0
+        Ganador.CIVILES: 0,
+        Ganador.IMPOSTOR: 0
     }
 
     try:
         while True:
+
             controlador = ControladorPartida(
                 vista,
                 AsignadorRolesAleatorio(),
@@ -33,25 +40,35 @@ def main():
                 RepositorioPalabrasArchivo(ruta)
             )
 
+            # Ejecutar partida
             resultado = controlador.jugar()
 
-            marcador[resultado.ganador.name] += 1
+            # Actualizar marcador
+            marcador[resultado.ganador] += 1
 
-            vista.titulo("Marcador acumulado")
+            # Mostrar marcador
+            vista.titulo("MARCADOR ACUMULADO")
+
             vista.mensaje(
-                f"Civiles: {marcador['Civiles']} | "
-                f"Impostor: {marcador['Impostor']}"
+                f"Civiles: {marcador[Ganador.CIVILES]}"
             )
 
+            vista.mensaje(
+                f"Impostor: {marcador[Ganador.IMPOSTOR]}"
+            )
+
+            # Preguntar si desean jugar otra vez
             if not vista.pedir_si_no(
                 "¿Jugar otra partida? (s/N): ",
                 False
             ):
                 break
-    except ( KeyboardInterrupt, EOFError):
+
+    except (KeyboardInterrupt, EOFError):
         vista.mensaje(
-            "\nJuego interrumpido"
+            "\nJuego interrumpido. ¡Hasta pronto!"
         )
+
 
 if __name__ == "__main__":
     main()

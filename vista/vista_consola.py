@@ -1,6 +1,6 @@
 import os
 import time
-
+import msvcrt
 
 class VistaConsola:
 
@@ -75,20 +75,56 @@ class VistaConsola:
             )
 
     def esperar_debate(self, segundos):
-        self.titulo("DEBATE")
-        self.mensaje(
-            "Discutan quién podría ser el impostor."
-        )
+            self.titulo("DEBATE")
 
-        for restantes in range(segundos, 0, -1):
-            print(
-                f"\rTiempo restante: {restantes:3d} segundos",
-                end="",
-                flush=True
+            self.mensaje(
+                "Discutan quién podría ser el impostor."
             )
-            time.sleep(1)
+            self.mensaje(
+                "Presiona ENTER para terminar el debate antes."
+            )
 
-        print("\n¡Terminó el debate!")
+            if segundos <= 0:
+                self.mensaje("Debate finalizado.")
+                return
+
+            
+            while msvcrt.kbhit():
+                msvcrt.getwch()
+
+            tiempo_final = time.monotonic() + segundos
+            ultimo_segundo = -1
+
+            while True:
+
+                restante = max(
+                    0,
+                    int(tiempo_final - time.monotonic()) + 1
+                )
+
+              
+                if restante != ultimo_segundo:
+                    print(
+                        f"\rTiempo restante: {restante} segundos   ",
+                        end="",
+                        flush=True
+                    )
+                    ultimo_segundo = restante
+
+               
+                if msvcrt.kbhit():
+                    tecla = msvcrt.getwch()
+
+                    if tecla == "\r":
+                        print("\n¡Debate terminado manualmente!")
+                        return
+
+               
+                if time.monotonic() >= tiempo_final:
+                    print("\n¡Terminó el tiempo de debate!")
+                    return
+
+                time.sleep(0.05)
 
     def pedir_voto(self, votante, candidatos):
         elegibles = [

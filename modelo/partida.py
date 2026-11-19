@@ -338,3 +338,15 @@ class Partida:
             )
 
         return self.__resultado
+
+    def informacion_final(self) -> tuple[str, str]:
+        """Devuelve la palabra y el impostor al finalizar la partida"""
+
+        if not self.finalizada:
+            raise EstadoInvalidoException(
+                "La partida todavía no ha terminado"
+            )
+        return(
+            self.__palabra.texto,
+            self.__impostor.nombre
+        )

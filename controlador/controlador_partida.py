@@ -16,7 +16,7 @@ from servicios.interfaces import (
 
 class ControladorPartida:
 
-    def _init_(
+    def __init__(
         self,
         vista,
         asignador: IAsignadorRoles,
